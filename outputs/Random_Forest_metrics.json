@@ -1,0 +1,13 @@
+{
+    "model_name": "Random Forest",
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "roc_auc": 1.0,
+    "n_test_samples": 12500,
+    "n_attacks_detected": 3750,
+    "n_attacks_actual": 3750,
+    "false_positives": 0,
+    "false_negatives": 0
+}

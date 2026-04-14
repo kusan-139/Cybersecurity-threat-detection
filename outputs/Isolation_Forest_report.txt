@@ -1,0 +1,15 @@
+Model: Isolation Forest
+=======================================================
+Accuracy  : 90.2240%
+Precision : 100.0000%
+Recall    : 67.4133%
+F1-Score  : 80.5352%
+
+              precision    recall  f1-score   support
+
+  NORMAL (0)     0.8775    1.0000    0.9347      8750
+  ATTACK (1)     1.0000    0.6741    0.8054      3750
+
+    accuracy                         0.9022     12500
+   macro avg     0.9387    0.8371    0.8700     12500
+weighted avg     0.9142    0.9022    0.8959     12500

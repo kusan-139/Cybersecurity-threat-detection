@@ -1,0 +1,16 @@
+Model: Random Forest
+=======================================================
+Accuracy  : 100.0000%
+Precision : 100.0000%
+Recall    : 100.0000%
+F1-Score  : 100.0000%
+ROC-AUC   : 1.000000
+
+              precision    recall  f1-score   support
+
+  NORMAL (0)     1.0000    1.0000    1.0000      8750
+  ATTACK (1)     1.0000    1.0000    1.0000      3750
+
+    accuracy                         1.0000     12500
+   macro avg     1.0000    1.0000    1.0000     12500
+weighted avg     1.0000    1.0000    1.0000     12500
