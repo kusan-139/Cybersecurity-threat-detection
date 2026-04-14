@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Cyber Threat Detection — SOC Dashboard</title>
+  <meta name="description" content="AI-Powered Cybersecurity Threat Detection System — Real-time Security Operations Center Dashboard" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TOP NAV BAR
+════════════════════════════════════════════════════════════════ -->
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="nav-logo">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">CyberShield<span class="logo-ai">AI</span></span>
+    </div>
+    <div class="nav-subtitle">Security Operations Center</div>
+  </div>
+  <div class="nav-center">
+    <div class="status-bar">
+      <span class="status-dot pulse"></span>
+      <span class="status-text">MONITORING ACTIVE</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-time" id="navTime">--:--:--</div>
+    <div class="nav-badge">v1.0.0</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ALERT TICKER
+════════════════════════════════════════════════════════════════ -->
+<div class="ticker-bar">
+  <span class="ticker-label">⚡ LIVE</span>
+  <div class="ticker-track">
+    <div class="ticker-content" id="tickerContent">
+      Initializing threat feed... Scanning network traffic... AI models online...
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════════════════════ -->
+<main class="main-content">
+
+  <!-- ─── KPI CARDS ROW ──────────────────────────────────────── -->
+  <section class="kpi-row">
+
+    <div class="kpi-card kpi-critical">
+      <div class="kpi-icon">🔴</div>
+      <div class="kpi-body">
+        <div class="kpi-value count-up" data-target="{{ stats.critical }}">0</div>
+        <div class="kpi-label">CRITICAL</div>
+      </div>
+      <div class="kpi-bar" style="background: #ff1744;"></div>
+    </div>
+
+    <div class="kpi-card kpi-high">
+      <div class="kpi-icon">🟠</div>
+      <div class="kpi-body">
+        <div class="kpi-value count-up" data-target="{{ stats.high }}">0</div>
+        <div class="kpi-label">HIGH</div>
+      </div>
+      <div class="kpi-bar" style="background: #ff6d00;"></div>
+    </div>
+
+    <div class="kpi-card kpi-medium">
+      <div class="kpi-icon">🟡</div>
+      <div class="kpi-body">
+        <div class="kpi-value count-up" data-target="{{ stats.medium }}">0</div>
+        <div class="kpi-label">MEDIUM</div>
+      </div>
+      <div class="kpi-bar" style="background: #ffab00;"></div>
+    </div>
+
+    <div class="kpi-card kpi-low">
+      <div class="kpi-icon">🟢</div>
+      <div class="kpi-body">
+        <div class="kpi-value count-up" data-target="{{ stats.low }}">0</div>
+        <div class="kpi-label">LOW</div>
+      </div>
+      <div class="kpi-bar" style="background: #00e676;"></div>
+    </div>
+
+    <div class="kpi-card kpi-total">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-body">
+        <div class="kpi-value count-up" data-target="{{ stats.total_alerts }}">0</div>
+        <div class="kpi-label">TOTAL ALERTS</div>
+      </div>
+      <div class="kpi-bar" style="background: #2196f3;"></div>
+    </div>
+
+    <div class="kpi-card kpi-ips">
+      <div class="kpi-icon">🌐</div>
+      <div class="kpi-body">
+        <div class="kpi-value count-up" data-target="{{ stats.unique_src_ips }}">0</div>
+        <div class="kpi-label">UNIQUE IPs</div>
+      </div>
+      <div class="kpi-bar" style="background: #9c27b0;"></div>
+    </div>
+
+  </section>
+
+  <!-- ─── MODEL ACCURACY RIBBON ─────────────────────────────── -->
+  <section class="model-ribbon">
+    <div class="model-badge rf">
+      <span class="model-name">🤖 Random Forest</span>
+      <span class="model-metric">Accuracy <strong>{{ stats.rf_accuracy }}%</strong></span>
+      <span class="model-metric">F1-Score <strong>{{ stats.rf_f1 }}%</strong></span>
+      <span class="model-metric">AUC <strong>{{ stats.rf_auc }}</strong></span>
+    </div>
+    <div class="model-divider">VS</div>
+    <div class="model-badge if">
+      <span class="model-name">🔍 Isolation Forest</span>
+      <span class="model-metric">Accuracy <strong>{{ stats.if_accuracy }}%</strong></span>
+      <span class="model-metric">F1-Score <strong>{{ stats.if_f1 }}%</strong></span>
+      <span class="model-metric">Mode <strong>Unsupervised</strong></span>
+    </div>
+    <div class="model-divider">+</div>
+    <div class="model-badge combined">
+      <span class="model-name">⚡ Combined Mode</span>
+      <span class="model-metric">Avg Confidence <strong>{{ stats.avg_confidence }}%</strong></span>
+      <span class="model-metric">Status <strong class="green-text">ACTIVE</strong></span>
+    </div>
+  </section>
+
+  <!-- ─── CHARTS GRID ───────────────────────────────────────── -->
+  <section class="charts-grid">
+
+    <!-- Attack Timeline -->
+    <div class="chart-card chart-wide">
+      <div class="card-header">
+        <h3 class="card-title">📈 Attack Timeline (Hourly)</h3>
+        <span class="card-badge">Last 8 hours</span>
+      </div>
+      <canvas id="timelineChart"></canvas>
+    </div>
+
+    <!-- Attack Type Doughnut -->
+    <div class="chart-card">
+      <div class="card-header">
+        <h3 class="card-title">🎯 Attack Distribution</h3>
+        <span class="card-badge">By Type</span>
+      </div>
+      <canvas id="attackChart"></canvas>
+    </div>
+
+    <!-- Severity Doughnut -->
+    <div class="chart-card">
+      <div class="card-header">
+        <h3 class="card-title">⚠️ Severity Breakdown</h3>
+        <span class="card-badge">By Level</span>
+      </div>
+      <canvas id="severityChart"></canvas>
+    </div>
+
+    <!-- Top IPs Bar -->
+    <div class="chart-card chart-wide">
+      <div class="card-header">
+        <h3 class="card-title">🌐 Top Attacking Source IPs</h3>
+        <span class="card-badge">Top 10</span>
+      </div>
+      <canvas id="ipChart"></canvas>
+    </div>
+
+  </section>
+
+  <!-- ─── BOTTOM ROW — LIVE FEED + THREAT DETECTOR ─────────── -->
+  <section class="bottom-grid">
+
+    <!-- Live Threat Feed -->
+    <div class="feed-card">
+      <div class="card-header">
+        <h3 class="card-title">🔴 Live Threat Feed</h3>
+        <span class="card-badge pulse-badge">LIVE</span>
+      </div>
+      <div class="feed-list" id="threatFeed">
+        <div class="feed-loading">Connecting to threat feed...</div>
+      </div>
+    </div>
+
+    <!-- AI Threat Detector -->
+    <div class="detector-card">
+      <div class="card-header">
+        <h3 class="card-title">⚡ AI Threat Detector</h3>
+        <span class="card-badge">Real-time</span>
+      </div>
+      <div class="detector-body">
+        <p class="detector-desc">Simulate a network connection and let the AI classify it:</p>
+
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Error Rate (serror_rate)</label>
+            <input type="range" id="serrorRate" min="0" max="1" step="0.01" value="0.05"
+                   oninput="updateSlider('serrorRateVal', this.value)" />
+            <span class="slider-val" id="serrorRateVal">0.05</span>
+          </div>
+          <div class="input-group">
+            <label>Diff Service Rate</label>
+            <input type="range" id="diffSrvRate" min="0" max="1" step="0.01" value="0.1"
+                   oninput="updateSlider('diffSrvRateVal', this.value)" />
+            <span class="slider-val" id="diffSrvRateVal">0.10</span>
+          </div>
+          <div class="input-group">
+            <label>Connection Count</label>
+            <input type="range" id="connCount" min="1" max="512" step="1" value="5"
+                   oninput="updateSlider('connCountVal', this.value)" />
+            <span class="slider-val" id="connCountVal">5</span>
+          </div>
+          <div class="input-group">
+            <label>Same Service Rate</label>
+            <input type="range" id="sameSrvRate" min="0" max="1" step="0.01" value="0.9"
+                   oninput="updateSlider('sameSrvRateVal', this.value)" />
+            <span class="slider-val" id="sameSrvRateVal">0.90</span>
+          </div>
+          <div class="input-group">
+            <label>Failed Logins</label>
+            <input type="range" id="failedLogins" min="0" max="10" step="1" value="0"
+                   oninput="updateSlider('failedLoginsVal', this.value)" />
+            <span class="slider-val" id="failedLoginsVal">0</span>
+          </div>
+          <div class="input-group">
+            <label>REJ Error Rate</label>
+            <input type="range" id="rerrorRate" min="0" max="1" step="0.01" value="0.0"
+                   oninput="updateSlider('rerrorRateVal', this.value)" />
+            <span class="slider-val" id="rerrorRateVal">0.00</span>
+          </div>
+        </div>
+
+        <button class="detect-btn" id="detectBtn" onclick="runDetection()">
+          🔍 ANALYZE CONNECTION
+        </button>
+
+        <div class="detection-result" id="detectionResult" style="display:none;"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ─── RECENT ALERTS TABLE ───────────────────────────────── -->
+  <section class="table-section">
+    <div class="card-header">
+      <h3 class="card-title">📋 Recent Security Alerts</h3>
+      <span class="card-badge" id="alertCount">Loading...</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="alert-table" id="alertTable">
+        <thead>
+          <tr>
+            <th>Alert ID</th>
+            <th>Timestamp</th>
+            <th>Source IP</th>
+            <th>Threat Type</th>
+            <th>Confidence</th>
+            <th>Severity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="alertTableBody">
+          <tr><td colspan="7" class="table-loading">Loading alerts...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────── -->
+<footer class="footer">
+  <span>🛡️ AI-Powered Cybersecurity Threat Detection System</span>
+  <span>Built with Python · scikit-learn · Flask · Chart.js</span>
+  <span>© 2024 — Student Portfolio Project</span>
+</footer>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
